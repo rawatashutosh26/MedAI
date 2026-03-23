@@ -14,7 +14,7 @@ export default function AnimatedCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={hover ? { scale: 1.02, y: -4 } : {}}
-      className={`bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden ${hover ? 'cursor-pointer transition-shadow duration-300 hover:shadow-2xl' : ''} ${className}`}
+      className={`bg-white rounded-2xl shadow-md border border-blue-100/60 overflow-hidden ${hover ? 'cursor-pointer transition-shadow duration-300 hover:shadow-lg' : ''} ${className}`}
       onClick={onClick}
     >
       {children}

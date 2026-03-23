@@ -1,7 +1,38 @@
 import axios from 'axios';
 
 // Connect to your Node.js Backend (Port 5000)
-const API = axios.create({ baseURL: 'http://localhost:5000/api' });
+// Cookie-based auth: httpOnly token is sent automatically when withCredentials=true.
+const API = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  withCredentials: true,
+});
+
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      window.dispatchEvent(new Event('medai:unauthorized'));
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const signup = async (email, password) => {
+  return API.post('/auth/signup', { email, password });
+};
+
+export const login = async (email, password) => {
+  return API.post('/auth/login', { email, password });
+};
+
+export const logout = async () => {
+  return API.post('/auth/logout');
+};
+
+export const me = async () => {
+  const res = await API.get('/auth/me');
+  return res.data;
+};
 
 export const analyzeImage = async (moduleName, file, metadata = {}) => {
   const formData = new FormData();

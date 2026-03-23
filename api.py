@@ -12,7 +12,7 @@ from contextlib import asynccontextmanager
 from torchvision import transforms, models
 import torch.nn as nn
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from tensorflow.keras.models import load_model
+from tf_keras.models import load_model
 
 # --- HELPER: Convert OpenCV Image to Base64 String ---
 def encode_image(image_np):
@@ -193,8 +193,7 @@ def read_imagefile(file) -> Image.Image:
 @app.post("/predict/chest")
 async def predict_chest(file: UploadFile = File(...)):
     model = models_cache.get('chest')
-    if not model: raise HTTPException(500, "Chest model not loaded")
-    
+
     # 1. Read Image
     image = read_imagefile(await file.read())
     
@@ -223,7 +222,21 @@ async def predict_chest(file: UploadFile = File(...)):
 
     # B. Negative Mode (Inverted - Good for Masses)
     img_neg = cv2.bitwise_not(img_cv)
-    
+
+    # If the model is unavailable (files missing / failed load), return a safe fallback
+    if model is None:
+        print("⚠️ Chest model not loaded; returning fallback response")
+        return {
+            "module": "chest",
+            "findings": [{"condition": "No Finding", "confidence": 0.0}],
+            "warning": "Chest model unavailable on server (models/chest_xray.pth missing).",
+            "images": {
+                "original": encode_image(img_cv),
+                "clahe": encode_image(img_clahe),
+                "negative": encode_image(img_neg)
+            }
+        }
+
     # 4. Predict
     with torch.no_grad():
         out = model(img_tensor)
@@ -260,8 +273,7 @@ async def predict_chest(file: UploadFile = File(...)):
 @app.post("/predict/brain")
 async def predict_brain(file: UploadFile = File(...)):
     model = models_cache.get('brain')
-    if not model: raise HTTPException(500, "Brain model not loaded")
-    
+
     # 1. Read Image
     image = read_imagefile(await file.read())
     
@@ -275,6 +287,21 @@ async def predict_brain(file: UploadFile = File(...)):
     img_array = np.array(img_resized) / 255.0
     img_batch = np.expand_dims(img_array, axis=0)
     
+    # If Brain model isn't ready, return fallback response
+    if model is None:
+        print("⚠️ Brain model not loaded; returning fallback response")
+        return {
+            "module": "brain",
+            "diagnosis": "No Tumor",
+            "confidence": 0.0,
+            "warning": "Brain model unavailable on server (models/brain_tumor_vgg16_fixed.keras missing).",
+            "images": {
+                "original": encode_image(img_viz),
+                "contrast": encode_image(img_viz),
+                "heatmap": None
+            }
+        }
+
     # 3. Predict
     pred = model.predict(img_batch, verbose=0)
     idx = np.argmax(pred)
@@ -325,8 +352,7 @@ async def predict_brain(file: UploadFile = File(...)):
 async def predict_eye(file: UploadFile = File(...)):
     m_multi = models_cache.get('eye_multi')
     m_cnn = models_cache.get('eye_cnn')
-    if not m_multi or not m_cnn: raise HTTPException(500, "Eye models not loaded")
-    
+
     # 1. Read & Preprocess
     image = read_imagefile(await file.read())
     img_np = np.array(image)
@@ -342,6 +368,21 @@ async def predict_eye(file: UploadFile = File(...)):
     img_clahe_bgr = cv2.cvtColor(merged, cv2.COLOR_LAB2BGR)
     final_rgb = cv2.cvtColor(img_clahe_bgr, cv2.COLOR_BGR2RGB)
     
+    # If the Eye models are not loaded, return fallback response
+    if m_multi is None or m_cnn is None:
+        print("⚠️ Eye models not loaded; returning fallback response")
+        return {
+            "module": "eye",
+            "diagnosis": "No DR",
+            "confidence": 0.0,
+            "warning": "Eye models unavailable on server (models/multibranch_model_1.h5 or cnn_model_1.h5 missing).",
+            "images": {
+                "original": encode_image(img_resized),
+                "clahe": encode_image(img_clahe_bgr),
+                "heatmap": None
+            }
+        }
+
     # 3. Predict
     norm_img = final_rgb / 255.0
     img_batch = np.expand_dims(norm_img, axis=0)
@@ -401,8 +442,7 @@ async def predict_skin(
 ):
     model = models_cache.get('skin')
     ohe = preprocessors.get('skin_ohe')
-    if not model or not ohe: raise HTTPException(500, "Skin model/preprocessors not loaded")
-    
+
     # 1. Read Image
     image = read_imagefile(await file.read())
     
@@ -448,6 +488,22 @@ async def predict_skin(
     num_scl = preprocessors['skin_scaler'].transform(meta_df[['age_approx']])
     meta_batch = np.hstack([cat_enc, num_scl])
     
+    # If Skin model/preprocessors are missing, return fallback response
+    if model is None or ohe is None:
+        print("⚠️ Skin model/preprocessors not loaded; returning fallback response")
+        return {
+            "module": "skin",
+            "diagnosis": "Benign",
+            "malignancy_score": 0.0,
+            "details": "Model unavailable; using fallback output.",
+            "warning": "Skin model unavailable on server (models/best_model.keras or preprocessors missing).",
+            "images": {
+                "original": encode_image(img_viz),
+                "cleaned": encode_image(img_cleaned),
+                "segmented": encode_image(img_segmented)
+            }
+        }
+
     # 6. Predict
     pred = model.predict([img_batch, meta_batch], verbose=0)
     malignancy = float(pred[0][0])
