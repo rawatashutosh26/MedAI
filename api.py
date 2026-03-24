@@ -21,6 +21,7 @@ import torch.nn as nn
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from keras.models import load_model
 from pydantic import BaseModel
+import gdown
 
 # --- HELPER: Convert OpenCV Image to Base64 String ---
 def encode_image(image_np):
@@ -118,7 +119,27 @@ preprocessors = {}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("[*] Loading AI Models... This might take a minute.")
-    
+
+    os.makedirs('models', exist_ok=True)
+    MODEL_FILES = {
+        'best_model.keras': '1nOs7aD_wCPY-R3fyBiMwJcdENiMNVVDh',
+        'brain_tumor_vgg16_fixed.keras': '13pp49Hszgiqx8-NfPB0xqMP_Xr5IYG26',
+        'chest_xray.pth': '168COiHHfYtASFR9tq74Ae3EkP1r1FHs8',
+        'cnn_model_1.h5': '1SAoXWi5WkbEaJlgc0fpTWOJjj_YGCbif',
+        'config.json': '1iUe2hPgUYxPlaxBRVjkCa37aDpIhHdcl',
+        'lstm_model.h5': '1wQaojmsKZSHiIk99-cJX_nnINocuMRYm',
+        'ml_artifacts.pkl': '1qddEuoarOLzYjTn2heNKmS6WszK6HiOm',
+        'multibranch_model_1.h5': '14t5OXQb3vdAHHZKzbmHu7AJE4RSLk75R',
+        'multibranch_model_1.keras': '1WvU1ajbfuH0eSmMVRfffVwJVwFkj9On5',
+    }
+    for filename, file_id in MODEL_FILES.items():
+        filepath = os.path.join('models', filename)
+        if not os.path.exists(filepath):
+            print(f"[*] Downloading {filename} from Google Drive...", flush=True)
+            gdown.download(f'https://drive.google.com/uc?id={file_id}', filepath, quiet=False)
+        else:
+            print(f"[OK] {filename} already exists locally.", flush=True)
+
     # A. LOAD CHEST MODEL (PyTorch)
     try:
         chest_model = models.resnet50(weights=None)

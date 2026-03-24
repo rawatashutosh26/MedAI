@@ -103,10 +103,11 @@ function requireAuth(req, res, next) {
 
 function setAuthCookie(res, token) {
     const isProd = process.env.NODE_ENV === 'production';
+    const prodMode = process.env.NODE_ENV === 'production';
     res.cookie(AUTH_COOKIE_NAME, token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: isProd,
+        sameSite: prodMode ? 'none' : 'lax',
+        secure: prodMode,
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 }
@@ -288,6 +289,19 @@ app.post('/api/analyze', requireAuth, upload.single('image'), async (req, res) =
     }
 });
 
+// --- 6b. SEPSIS ROUTE (Protected — proxied to FastAPI) ---
+app.post('/api/analyze/sepsis', requireAuth, async (req, res) => {
+    try {
+        const PYTHON_API_URL = process.env.PYTHON_API_URL || 'http://127.0.0.1:8000';
+        const response = await axios.post(`${PYTHON_API_URL}/predict/sepsis`, req.body);
+        res.json({ success: true, data: response.data });
+    } catch (error) {
+        console.error("Sepsis Error:", error?.response?.data || error.message);
+        const message = error?.response?.data?.detail || error?.message || "Sepsis analysis failed";
+        res.status(500).json({ success: false, error: message });
+    }
+});
+
 // --- 7. HISTORY ROUTE (Protected) ---
 app.get('/api/history', requireAuth, async (req, res) => {
     try {
@@ -304,5 +318,13 @@ app.get('/api/history', requireAuth, async (req, res) => {
         res.status(500).json({ error: "Failed to fetch history" });
     }
 });
+
+const path = require('path');
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+}
 
 app.listen(PORT, () => console.log(`🚀 Node Server running on port ${PORT}`));
