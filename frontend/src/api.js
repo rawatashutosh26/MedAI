@@ -1,7 +1,42 @@
 import axios from 'axios';
 
-// Connect to your Node.js Backend (Port 5000)
-const API = axios.create({ baseURL: 'http://localhost:5000/api' });
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV)
+  ? '/api'
+  : (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
+    ? import.meta.env.VITE_API_BASE
+    : 'http://localhost:5000/api';
+
+const API = axios.create({
+  baseURL: API_BASE,
+  withCredentials: true,
+});
+
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      window.dispatchEvent(new Event('medai:unauthorized'));
+    }
+    return Promise.reject(error);
+  }
+);
+
+export const signup = async (email, password) => {
+  return API.post('/auth/signup', { email, password });
+};
+
+export const login = async (email, password) => {
+  return API.post('/auth/login', { email, password });
+};
+
+export const logout = async () => {
+  return API.post('/auth/logout');
+};
+
+export const me = async () => {
+  const res = await API.get('/auth/me');
+  return res.data;
+};
 
 export const analyzeImage = async (moduleName, file, metadata = {}) => {
   const formData = new FormData();
@@ -20,6 +55,16 @@ export const analyzeImage = async (moduleName, file, metadata = {}) => {
     return response.data;
   } catch (error) {
     console.error("API Error:", error);
+    throw error;
+  }
+};
+
+export const analyzeSepsis = async (vitals) => {
+  try {
+    const response = await API.post('/analyze/sepsis', vitals);
+    return response.data;
+  } catch (error) {
+    console.error("Sepsis API Error:", error);
     throw error;
   }
 };

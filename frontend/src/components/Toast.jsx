@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
 
 export default function Toast({ message, type = 'info', onClose, duration = 3000 }) {
   useEffect(() => {
@@ -13,10 +12,10 @@ export default function Toast({ message, type = 'info', onClose, duration = 3000
   }, [duration, onClose]);
 
   const icons = {
-    success: <CheckCircle className="text-green-500" size={20} />,
-    error: <AlertCircle className="text-red-500" size={20} />,
-    warning: <AlertTriangle className="text-amber-500" size={20} />,
-    info: <Info className="text-blue-500" size={20} />,
+    success: <i className="bi bi-check-circle-fill text-green-500" style={{ fontSize: '20px' }} />, 
+    error: <i className="bi bi-x-circle-fill text-red-500" style={{ fontSize: '20px' }} />,
+    warning: <i className="bi bi-exclamation-triangle-fill text-amber-500" style={{ fontSize: '20px' }} />,
+    info: <i className="bi bi-info-circle-fill text-blue-500" style={{ fontSize: '20px' }} />,
   };
 
   const colors = {
@@ -39,7 +38,7 @@ export default function Toast({ message, type = 'info', onClose, duration = 3000
         onClick={onClose}
         className="hover:opacity-70 transition-opacity"
       >
-        <X size={18} />
+        <i className="bi bi-x-lg" style={{ fontSize: '18px' }} />
       </button>
     </motion.div>
   );
