@@ -398,6 +398,8 @@ function HomeDashboard({ onNavigate }) {
     },
   ];
 
+  const imagingModules = modules.filter((m) => m.id !== 'sepsis');
+
   return (
     <div className="p-8 max-w-7xl mx-auto">
       {/* Welcome Section */}
@@ -446,6 +448,43 @@ function HomeDashboard({ onNavigate }) {
         })}
       </div>
 
+      {/* Sepsis — ICU / vitals (non-imaging) */}
+      <motion.section
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="mb-8 rounded-2xl border border-orange-200/80 bg-gradient-to-br from-orange-50 via-white to-amber-50/80 p-6 md:p-8 shadow-md"
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+          <div className="flex items-start gap-4 flex-1">
+            <div
+              className="p-4 rounded-2xl text-white shadow-lg shrink-0"
+              style={{ background: 'linear-gradient(135deg, #ea580c, #f97316)' }}
+            >
+              <i className="bi bi-virus" style={{ fontSize: '36px' }} aria-hidden />
+            </div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-orange-800/80 mb-1">ICU · Clinical inputs</p>
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">Sepsis risk assessment</h2>
+              <p className="text-slate-700 text-sm md:text-base leading-relaxed max-w-2xl">
+                No image upload—enter vitals and labs for an ensemble early-warning score (LSTM + XGBoost + Random Forest),
+                shock index, and alarm cues for bedside review.
+              </p>
+            </div>
+          </div>
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onNavigate('sepsis')}
+            className="shrink-0 px-6 py-3.5 rounded-xl font-bold text-white shadow-lg transition-colors whitespace-nowrap"
+            style={{ background: 'linear-gradient(135deg, #ea580c, #c2410c)' }}
+          >
+            Open Sepsis module
+          </motion.button>
+        </div>
+      </motion.section>
+
       {/* Modules Grid */}
       <div>
         <motion.h2
@@ -453,10 +492,10 @@ function HomeDashboard({ onNavigate }) {
           animate={{ opacity: 1 }}
           className="text-2xl font-bold text-slate-800 mb-6"
         >
-          Diagnostic Modules
+          Imaging diagnostic modules
         </motion.h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {modules.map((module, idx) => (
+          {imagingModules.map((module, idx) => (
             <motion.div
               key={module.id}
               initial={{ opacity: 0, scale: 0.9 }}

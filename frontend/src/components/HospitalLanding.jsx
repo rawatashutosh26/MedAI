@@ -37,6 +37,14 @@ export default function HospitalLanding({ onNavigate, brainIcon }) {
         gradient: 'bg-amber-500/20',
         dot: 'bg-amber-500',
       },
+      {
+        id: 'sepsis',
+        title: 'Sepsis Risk (ICU)',
+        desc: 'Early warning from vitals and labs using ensemble LSTM, XGBoost, and Random Forest.',
+        icon: <i className="bi bi-virus text-orange-600" style={{ fontSize: '34px' }} />,
+        gradient: 'bg-orange-500/20',
+        dot: 'bg-orange-500',
+      },
     ],
     [brainIcon]
   );
@@ -92,7 +100,7 @@ export default function HospitalLanding({ onNavigate, brainIcon }) {
                 </span>
               </h1>
               <p className="mt-4 text-lg text-slate-800 font-medium leading-relaxed">
-                Upload a scan to get AI-assisted insights across chest, brain, eye, and skin—paired with confidence and explainable views.
+                Upload a scan for chest, brain, eye, and skin—or enter ICU vitals for sepsis risk—with confidence scores and explainable views.
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
@@ -196,7 +204,7 @@ export default function HospitalLanding({ onNavigate, brainIcon }) {
           <div className="flex items-end justify-between gap-4 flex-wrap mb-5">
             <div>
               <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Departments</h2>
-              <p className="text-slate-800 font-medium mt-1">Choose a module to analyze medical images.</p>
+              <p className="text-slate-800 font-medium mt-1">Imaging modules plus ICU sepsis risk from clinical inputs.</p>
             </div>
             <div className="text-sm text-slate-700 font-medium">Vibrant, complementary colors + interactive animations.</div>
           </div>

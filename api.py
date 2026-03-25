@@ -1,5 +1,7 @@
 import os
 import io
+import logging
+import warnings
 import cv2
 import json
 import base64
@@ -22,6 +24,15 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from keras.models import load_model
 from pydantic import BaseModel
 import gdown
+
+# Quieter logs for legacy saved models (inference-only; does not change predictions).
+os.environ.setdefault('TF_CPP_MIN_LOG_LEVEL', '2')
+logging.getLogger('absl').setLevel(logging.ERROR)
+warnings.filterwarnings(
+    'ignore',
+    message=r'Do not pass an `input_shape`/`input_dim` argument to a layer',
+    category=UserWarning,
+)
 
 # --- HELPER: Convert OpenCV Image to Base64 String ---
 def encode_image(image_np):
@@ -131,6 +142,7 @@ async def lifespan(app: FastAPI):
         'ml_artifacts.pkl': '1qddEuoarOLzYjTn2heNKmS6WszK6HiOm',
         'multibranch_model_1.h5': '14t5OXQb3vdAHHZKzbmHu7AJE4RSLk75R',
         'multibranch_model_1.keras': '1WvU1ajbfuH0eSmMVRfffVwJVwFkj9On5',
+        'train.csv': '1F2I7CT2FUVxCBYv7kyuXvZUVOjgTFKNZ',
     }
     for filename, file_id in MODEL_FILES.items():
         filepath = os.path.join('models', filename)
