@@ -29,10 +29,10 @@ It integrates **deep learning + full-stack engineering** to assist clinicians wi
 ![Dashboard](https://github.com/user-attachments/assets/a85079ae-edd2-420e-b721-f4c498c46507)
 
 ### 🔹 Patient History
-![Patient History](https://github.com/user-attachments/assets/181cccd2-1955-439d-a354-11ef3c19d375)
+![Patient History](https://github.com/user-attachments/assets/909a6a1f-6cd7-4a26-9375-9bc94ac62822)
 
 ### 🔹 Brain MRI Module
-![Brain MRI](https://github.com/user-attachments/assets/909a6a1f-6cd7-4a26-9375-9bc94ac62822)
+![Brain MRI](https://github.com/user-attachments/assets/181cccd2-1955-439d-a354-11ef3c19d375)
 
 ### 🔹 Diagnosis Report Modal
 ![Report](https://github.com/user-attachments/assets/94759e9e-a250-4d61-93cd-741253dfa5a9)
