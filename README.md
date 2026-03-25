@@ -1,64 +1,86 @@
 <div align="center">
 
-![MedAI Pro](docs/images/medai-banner.svg)
+# 🧠 MedAI Pro
+### AI-powered Medical Imaging & Sepsis Risk Prediction Platform
 
-**AI-assisted medical imaging and ICU sepsis risk assessment**
-
-| | |
-| :--- | :--- |
-| **Live app** | `https://YOUR_USERNAME-medai.hf.space` ← *replace with your Hugging Face Space URL* |
-| **Repository** | `https://github.com/YOUR_USERNAME/YOUR_REPO` ← *replace with your GitHub repo URL* |
+🚀 **Live App:** https://rawatashu26-medai.hf.space/
 
 </div>
 
 ---
 
-## Overview
+## 📌 Overview
 
-MedAI Pro is a full-stack diagnostic assistant with:
+**MedAI Pro** is a full-stack AI healthcare platform designed for **multi-modal medical diagnosis** and **clinical risk prediction**.
 
-- **Imaging modules:** Chest X-Ray, Brain MRI, Retinal scan, Skin lesion analysis  
-- **Clinical module:** Sepsis risk from vitals and labs (LSTM + XGBoost + Random Forest ensemble)  
-- **Auth & history:** Express + JWT cookies; optional MongoDB Atlas for users and reports  
-- **Patient history (UI):** Local browser storage for recent analyses with thumbnails  
+It integrates **deep learning + full-stack engineering** to assist clinicians with:
 
-> **Disclaimer:** For research and education. Not a medical device and not a substitute for professional clinical judgment.
-
----
-
-## Screenshots & diagrams
-
-<p align="center">
-  <img src="docs/images/medai-banner.svg" alt="MedAI Pro banner" width="100%" />
-</p>
-
-<p align="center">
-  <img src="docs/images/architecture.svg" alt="Architecture diagram" width="100%" />
-</p>
-
-*Optional:* Add real UI screenshots under `docs/images/` (e.g. `dashboard.png`, `sepsis.png`) and link them here:
-
-```markdown
-![Dashboard](docs/images/dashboard.png)
-![Sepsis module](docs/images/sepsis.png)
-```
+- 🩻 Medical image analysis  
+- 🧠 Brain tumor detection (MRI)  
+- 👁️ Retinal disease classification  
+- 🧬 Skin lesion analysis  
+- ⚠️ ICU sepsis risk prediction  
 
 ---
 
-## Tech stack
+## 🖼️ Application Screenshots
 
-| Layer | Stack |
-| :--- | :--- |
-| Frontend | React 19, Vite, Tailwind CSS, Framer Motion, Axios |
-| API gateway | Node.js, Express, Mongoose, JWT, Helmet, CORS |
-| ML API | Python, FastAPI, Uvicorn |
-| ML | TensorFlow/Keras, PyTorch, scikit-learn, XGBoost, OpenCV |
-| Data | MongoDB Atlas (optional), `gdown` for model files from Google Drive |
-| Deploy | Docker (multi-stage), Hugging Face Spaces (example) |
+### 🔹 Dashboard
+![Dashboard](https://github.com/user-attachments/assets/a85079ae-edd2-420e-b721-f4c498c46507)
+
+### 🔹 Patient History
+![Patient History](https://github.com/user-attachments/assets/181cccd2-1955-439d-a354-11ef3c19d375)
+
+### 🔹 Brain MRI Module
+![Brain MRI](https://github.com/user-attachments/assets/909a6a1f-6cd7-4a26-9375-9bc94ac62822)
+
+### 🔹 Diagnosis Report Modal
+![Report](https://github.com/user-attachments/assets/94759e9e-a250-4d61-93cd-741253dfa5a9)
 
 ---
 
-## Project structure
+## ⚙️ Key Features
+
+### 🧠 Imaging Modules
+- Chest X-Ray (Pneumonia detection)
+- Brain MRI (Tumor classification + segmentation)
+- Retinal Scan (Severity detection)
+- Skin Lesion (Benign/Malignant classification)
+
+### ⚠️ Clinical Module
+- **Sepsis Risk Prediction**
+- Ensemble Model:
+  - LSTM
+  - XGBoost
+  - Random Forest
+
+### 🔐 Backend Features
+- JWT Authentication (secure cookies)
+- MongoDB (optional persistence)
+- REST API architecture
+
+### 🗂️ Patient History
+- Stores recent reports in browser (local storage)
+- Thumbnail previews
+- Quick access to past diagnoses
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer        | Technologies |
+|-------------|-------------|
+| Frontend     | React 19, Vite, Tailwind CSS, Framer Motion |
+| Backend      | Node.js, Express, JWT, Mongoose |
+| ML API       | FastAPI, Uvicorn |
+| ML Models    | TensorFlow, PyTorch, Scikit-learn, XGBoost |
+| Database     | MongoDB Atlas (optional) |
+| Deployment   | Docker, Hugging Face Spaces |
+
+---
+
+## 📂 Project Structure
+
 
 ```
 ├── api.py              # FastAPI app, model load, /predict/* routes
@@ -85,7 +107,7 @@ Large model files are **not** committed; they are downloaded at startup from Goo
 
 ## Local development
 
-### 1. Python (FastAPI)
+### 1️⃣ Python (FastAPI)
 
 ```bash
 python -m venv .venv
@@ -95,7 +117,7 @@ pip install -r requirements.txt
 uvicorn api:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 2. Node backend (Express)
+### 2️⃣ Node backend (Express)
 
 ```bash
 cd backend
@@ -104,7 +126,7 @@ npm install
 node server.js
 ```
 
-### 3. Frontend (Vite)
+### 3️⃣ Frontend (Vite)
 
 ```bash
 cd frontend
@@ -164,11 +186,3 @@ If you use **Vercel** for frontend only, add another row:
 ```
 
 ---
-
-## License & citation
-
-Use your chosen license in a `LICENSE` file. If this is coursework, cite your institution and capstone requirements as needed.
-
----
-
-*Generated for MedAI Pro — paste this entire file into GitHub as `README.md` in the repository root.*
